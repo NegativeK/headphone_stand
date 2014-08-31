@@ -26,13 +26,7 @@ module chamfer_pyramid(width, length, height, rise) {
     cut_length = length*subtract_scale;
     cut_height = height*1;
 
-    translate([-width/2, -cut_length/2, rise]) {
-        rotate([0, -45, 0]) {
-            cube([cut_width, cut_length, cut_height]);
-        }
-    }
-
-    mirror([1, 0, 0]) {
+    module chamfer_cutter() {
         translate([-width/2, -cut_length/2, rise]) {
             rotate([0, -45, 0]) {
                 cube([cut_width, cut_length, cut_height]);
@@ -40,17 +34,9 @@ module chamfer_pyramid(width, length, height, rise) {
         }
     }
 
-    translate([-cut_width/2, -length/2, rise]) {
-        rotate([45, 0, 0]) {
-            cube([cut_width, cut_length, cut_height]);
-        }
-    }
-
-    mirror([0, 1, 0]) {
-        translate([-cut_width/2, -length/2, rise]) {
-            rotate([45, 0, 0]) {
-                cube([cut_width, cut_length, cut_height]);
-            }
+    for(i = [0:3]) {
+        rotate([0, 0, 90*i]) {
+            chamfer_cutter();
         }
     }
 }
