@@ -8,7 +8,7 @@ module stand() {
 
     difference() {
         base_block(width, length, height);
-        chamfer_pyramid(width, length, height, 1.2, 0.75*height);
+        chamfer_pyramid(width, length, height, 0.75*height);
         post_holes(width, length, height);
     }
 }
@@ -19,7 +19,9 @@ module base_block(width, length, height) {
     }
 }
 
-module chamfer_pyramid(width, length, height, subtract_scale, rise) {
+module chamfer_pyramid(width, length, height, rise) {
+    subtract_scale = 1.2;
+
     cut_width = width*subtract_scale;
     cut_length = length*subtract_scale;
     cut_height = height*1;
