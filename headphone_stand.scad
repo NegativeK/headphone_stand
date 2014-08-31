@@ -81,14 +81,37 @@ module post_holes(width, length, height, post_width, x_y_scale) {
 
 module frame(width, length, lift, post_width, x_y_scale) {
     post_height = 10;
+    rise = (post_height + lift) - post_width/2;
 
-    module vertical() {
-        translate([x_y_scale*width, x_y_scale*length, lift]) {
-            cylinder(h = post_height, r = post_width/2);
+    module pins() {
+        module pin() {
+            pin_diameter = 1/8;
+            pin_length = post_width;
+
+            translate([-width*x_y_scale, -length*x_y_scale, rise]) {
+                rotate([0, 90, 45]) {
+                    cylinder(h = pin_length, d = pin_diameter);
+                }
+            }
+        }
+
+        for (i = [0, 180]) {
+            rotate([0, 0, i]) {
+                pin();
+            }
         }
     }
 
     module verticals() {
+        module vertical() {
+            difference() {
+                translate([x_y_scale*width, x_y_scale*length, lift]) {
+                    cylinder(h = post_height, r = post_width/2);
+                }
+                pins();
+            }
+        }
+
         for (i = [0, 180]) {
             rotate([0, 0, i]) {
                 vertical();
@@ -97,23 +120,27 @@ module frame(width, length, lift, post_width, x_y_scale) {
     }
 
     module horizontal() {
-        rise = (post_height + lift) - post_width/2;
         scaled_width = width*x_y_scale;
         scaled_length = length*x_y_scale;
 
         post_separation = sqrt(pow(scaled_width, 2) + pow(scaled_length, 2))*2;
 
-        translate([-width*x_y_scale, -length*x_y_scale, rise]) {
-            rotate([0, 90, 45]) {
-                cylinder(h = post_separation, r = post_width/2);
+        module bar() {
+            translate([-width*x_y_scale, -length*x_y_scale, rise]) {
+                rotate([0, 90, 45]) {
+                    cylinder(h = post_separation, r = post_width/2);
+                }
             }
+        }
+
+        difference() {
+            bar();
+            verticals();
+            pins();
         }
     }
 
     verticals();
-
-    difference() {
-        horizontal();
-        verticals();
-    }
+    horizontal();
+    pins();
 }
