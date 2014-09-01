@@ -11,7 +11,7 @@ module stand() {
 
     difference() {
         base_block(width, length, height);
-        chamfer_pyramid(width, length, height, 0.75*height);
+        chamfer_pyramid(width, length, height, 0.9*height);
         post_holes(width, length, height, post_width, post_scale);
     }
 
