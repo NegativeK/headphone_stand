@@ -87,7 +87,7 @@ module frame(width, length, lift, post_width) {
 
     module pins() {
         module pin() {
-            pin_diameter = 1/8;
+            pin_diameter = 1/4;
             pin_length = post_width;
 
             translate([-width/2 + post_width/4, -length/2 + post_width/4, rise]) {
