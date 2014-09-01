@@ -47,7 +47,7 @@ module chamfer_pyramid(width, length, height, rise) {
     }
 }
 
-module post_holes(width, length, height, post_width, x_y_scale) {
+module post_holes(width, length, height, post_width) {
     module hole() {
         // screw_head_height = 3/32;
         screw_head_height = 1/8;
@@ -67,19 +67,21 @@ module post_holes(width, length, height, post_width, x_y_scale) {
         screw_stack = screw_head_height + screw_hole_height;
         post_height = height - screw_stack;
 
-        translate([0, 0, screw_stack]) {
-            cylinder(h=post_height, r=post_width/2);
+        translate([-post_width/2, -post_width/2, screw_stack]) {
+            cube([post_width, post_width, height]);
         }
     }
 
-    for(i = [x_y_scale, -x_y_scale]) {
-        translate([i*width, i*length, 0]) {
-            hole();
+    for(i = [0, 1]) {
+        mirror([i, i, 0]) {
+            translate([width/2 - post_width/2, length/2 - post_width/2, 0]) {
+                hole();
+            }
         }
     }
 }
 
-module frame(width, length, lift, post_width, x_y_scale) {
+module frame(width, length, lift, post_width) {
     post_height = 10;
     rise = (post_height + lift) - post_width/2;
 
@@ -88,15 +90,15 @@ module frame(width, length, lift, post_width, x_y_scale) {
             pin_diameter = 1/8;
             pin_length = post_width;
 
-            translate([-width*x_y_scale, -length*x_y_scale, rise]) {
-                rotate([0, 90, 45]) {
+            translate([-width/2 + post_width/4, -length/2 + post_width/4, rise]) {
+                rotate([0, 45, 45]) {
                     cylinder(h = pin_length, d = pin_diameter);
                 }
             }
         }
 
-        for (i = [0, 180]) {
-            rotate([0, 0, i]) {
+        for (i = [0, 1]) {
+            mirror([i, i, 0]) {
                 pin();
             }
         }
@@ -138,9 +140,9 @@ module frame(width, length, lift, post_width, x_y_scale) {
 
         module chamfer() {
             translate([-width/2, -width/2, rise+post_width/2]) {
-                rotate([45, 0, 0]) {
+                rotate([90, 0, 0]) {
                     translate([0, -post_width/4, 0]) {
-                        cube([post_width, post_width*2, post_width]);
+                        cube([post_width*1.5, post_width*2, post_width]);
                     }
                 }
             }
@@ -168,8 +170,6 @@ module frame(width, length, lift, post_width, x_y_scale) {
             verticals();
             pins();
         }
-
-        // chamfer();
     }
 
     verticals();
