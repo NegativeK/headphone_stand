@@ -48,6 +48,34 @@ module chamfer_pyramid(width, length, height, rise) {
 }
 
 module post_holes(width, length, height, post_width) {
+    module milled_hole(height, screw_stack) {
+        milled_height = height - screw_stack;
+
+        module tool_extreme(tool_diameter) {
+            tool_radius = tool_diameter/2;
+
+            difference() {
+                cube([tool_radius, tool_radius, milled_height]);
+                translate([tool_radius, tool_radius, 0]) {
+                    cylinder(r = tool_radius, h = milled_height);
+                }
+            }
+        }
+
+        module x_y_z_extreme(tool_diameter) {
+            intersection_for(i = [0, 1, 2]) {
+                rotate(a = i*120, v = [1, 1, 1]) {
+                    tool_extreme(tool_diameter);
+                }
+            }
+        }
+
+        difference() {
+            cube([post_width, post_width, milled_height]);
+            x_y_z_extreme(1/2);
+        }
+    }
+
     module hole() {
         // screw_head_height = 3/32;
         screw_head_height = 1/8;
@@ -68,7 +96,7 @@ module post_holes(width, length, height, post_width) {
         post_height = height - screw_stack;
 
         translate([-post_width/2, -post_width/2, screw_stack]) {
-            cube([post_width, post_width, height]);
+            milled_hole(height, screw_stack);
         }
     }
 
@@ -139,7 +167,7 @@ module frame(width, length, lift, post_width) {
         }
 
         module chamfer() {
-            translate([-width/2, -width/2, rise+post_width/2]) {
+            translate([-width/2, -width/2, rise]) {
                 rotate([90, 0, 0]) {
                     translate([0, -post_width/4, 0]) {
                         cube([post_width*1.5, post_width*2, post_width]);
