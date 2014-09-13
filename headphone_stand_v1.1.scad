@@ -7,15 +7,14 @@ module stand() {
     height = 1;
 
     post_width = 1;
-    post_scale = 5/16;
 
     difference() {
         base_block(width, length, height);
-        post_holes(width, length, height, post_width, post_scale);
+        post_holes(width, length, height, post_width);
     }
 
     // We need to get the lift (1/4) out of post_holes properly.
-    frame(width, length, 1/4, post_width, post_scale);
+    frame(width, length, 1/4, post_width);
 }
 
 module base_block(width, length, height) {
